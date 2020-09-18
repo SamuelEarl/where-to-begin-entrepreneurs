@@ -8,6 +8,8 @@ import copy from 'rollup-plugin-copy'
 import del from 'del'
 import replace from '@rollup/plugin-replace';
 import { spassr } from 'spassr'
+// (1) Enter the following line:
+import proxy from "./proxy.js";
 
 const isNollup = !!process.env.NOLLUP
 
@@ -45,12 +47,12 @@ function baseConfig(config, ctx) {
         : { format: 'iife', file: `${buildDir}/bundle.js` }
 
     const _svelteConfig = {
-        dev: !production, // run-time checks      
+        dev: !production, // run-time checks
         // Extract component CSS — better performance
         css: css => css.write(`${buildDir}/bundle.css`),
         hot: isNollup,
     }
-    
+
     const svelteConfig = svelteWrapper(_svelteConfig, ctx) || _svelteConfig
 
     const _rollupConfig = {
@@ -79,6 +81,10 @@ function baseConfig(config, ctx) {
                 dedupe: importee => !!importee.match(/svelte(\/|$)/)
             }),
             commonjs(),
+
+            // Start the proxy server when this is not a production build.
+            // (2) Enter the following line:
+            !production && proxy(),
 
             production && terser(), // minify
             !production && isNollup && Hmr({ inMemory: true, public: staticDir, }), // refresh only updated code
@@ -124,6 +130,6 @@ function serviceWorkerConfig(config) {
         ]
     }
     const rollupConfig = swWrapper(_rollupConfig, {}) || _rollupConfig
-    
+
     return rollupConfig
 }

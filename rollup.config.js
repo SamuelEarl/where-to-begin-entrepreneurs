@@ -1,6 +1,9 @@
-import { createRollupConfigs } from './scripts/base.config.js'
-import autoPreprocess from 'svelte-preprocess'
-import postcssImport from 'postcss-import'
+import path from "path";
+import alias from "@rollup/plugin-alias";
+import { createRollupConfigs } from './scripts/base.config.js';
+import autoPreprocess from 'svelte-preprocess';
+import postcssImport from 'postcss-import';
+import replace from '@rollup/plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -10,13 +13,37 @@ export const config = {
   buildDir: `dist/build`,
   serve: !production,
   production,
-  rollupWrapper: rollup => rollup,
+  rollupWrapper: rollup => {
+    rollup.plugins = [
+      ...rollup.plugins,
+      replace({
+        process: JSON.stringify({
+          env: {
+            NODE_ENV: process.env.NODE_ENV
+          }
+        }),
+        "PROXY_URL": production ? "" : "http://localhost:8080/http://localhost:3000",
+      }),
+      alias({
+        resolve: [".svelte", ".js"],
+        entries: [
+          { find: "@", replacement: path.resolve(__dirname, "src") },
+        ]
+      }),
+    ]
+  },
   svelteWrapper: svelte => {
     svelte.preprocess = [
       autoPreprocess({
-        postcss: { plugins: [postcssImport()] },
-        defaults: { style: 'postcss' }
-      })]
+        postcss: {
+          plugins: [
+            postcssImport(),
+            require("autoprefixer"),
+          ],
+        },
+        defaults: { style: "postcss" }
+      }),
+    ]
   },
   swWrapper: worker => worker,
 }
@@ -39,5 +66,3 @@ export default configs
     return cfg
   }
 */
-
-

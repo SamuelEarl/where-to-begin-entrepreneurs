@@ -13,6 +13,6 @@ export default app;
 //         const wb = new Workbox('/sw.js')
 //         const registration = await wb.register()
 //         wb.addEventListener('installed', () => (console.log('installed service worker')))
-//         wb.addEventListener('externalinstalled', () => (console.log('installed service worker')))  
+//         wb.addEventListener('externalinstalled', () => (console.log('installed service worker')))
 //     })
 // }
