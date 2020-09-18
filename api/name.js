@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
     // If there are no errors, then return your data as a
     // JSON object and give it a status code of 200.
     res.status(200).json({
-      body: req.body,
+      body: { firstName, lastName },
     });
   }
   catch(err) {
