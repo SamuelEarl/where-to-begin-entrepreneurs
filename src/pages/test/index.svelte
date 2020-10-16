@@ -32,6 +32,7 @@
       nameRes = "";
 
       const url = "PROXY_URL" + "/api/name";
+      console.log("handlePayload:", url);
       let response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
@@ -39,6 +40,7 @@
           lastName: "Doe"
         })
       });
+      console.log("RESPONSE:", response);
 
       let result = await response.json();
       console.log("TEST PAYLOAD RESULT:", result);

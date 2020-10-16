@@ -22,7 +22,8 @@ export const config = {
             NODE_ENV: process.env.NODE_ENV
           }
         }),
-        "PROXY_URL": production ? "" : "http://localhost:8080/http://localhost:3000",
+        // "PROXY_URL": production ? "" : "http://localhost:8080/http://localhost:3000",
+        "PROXY_URL": production ? "" : `http://localhost:${process.env.PORT}/http://localhost:3000`,
       }),
       alias({
         resolve: [".svelte", ".js"],
